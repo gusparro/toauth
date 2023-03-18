@@ -1,14 +1,14 @@
 package com.gusparro.toauth.domain.repositories;
 
-import com.gusparro.toauth.domain.entities.AppUser;
+import com.gusparro.toauth.domain.entities.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface AppUserRepository extends JpaRepository<AppUser, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
 
-    Optional<AppUser> findByUsername(String username);
+    Optional<Role> findByName(String name);
 
 }

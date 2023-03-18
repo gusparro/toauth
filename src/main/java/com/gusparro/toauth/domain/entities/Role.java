@@ -14,6 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "role")
 public class Role {
 
     @Id
