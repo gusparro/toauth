@@ -2,6 +2,7 @@ package com.gusparro.toauth.domain.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +16,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Entity
 @Table(name = "role")
-public class Role {
+public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -29,6 +30,11 @@ public class Role {
     @ToString.Exclude
     @ManyToMany(mappedBy = "roles")
     private List<AppUser> appUsers;
+
+    @Override
+    public String getAuthority() {
+        return name;
+    }
 
     @Override
     public boolean equals(Object o) {
