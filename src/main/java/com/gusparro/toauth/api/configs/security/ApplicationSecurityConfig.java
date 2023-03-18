@@ -1,4 +1,4 @@
-package com.gusparro.toauth.api.controllers.configs.security;
+package com.gusparro.toauth.api.configs.security;
 
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
