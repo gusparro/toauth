@@ -1,5 +1,6 @@
 package com.gusparro.toauth.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +28,7 @@ public class Role implements GrantedAuthority {
 
     private String description;
 
+    @JsonIgnore
     @ToString.Exclude
     @ManyToMany(mappedBy = "roles")
     private List<AppUser> appUsers;

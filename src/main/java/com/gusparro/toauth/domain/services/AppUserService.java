@@ -5,6 +5,7 @@ import com.gusparro.toauth.domain.entities.Role;
 import com.gusparro.toauth.domain.repositories.AppUserRepository;
 import com.gusparro.toauth.domain.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,8 @@ public class AppUserService {
 
     private final RoleRepository roleRepository;
 
+    private final PasswordEncoder encoder;
+
     public List<AppUser> findAll() {
         return appUserRepository.findAll();
     }
@@ -32,6 +35,10 @@ public class AppUserService {
     }
 
     public AppUser save(AppUser appUser) {
+        if (appUser.getPassword() != null) {
+            appUser.setPassword(encoder.encode(appUser.getPassword()));
+        }
+
         return appUserRepository.save(appUser);
     }
 
