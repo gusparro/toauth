@@ -1,6 +1,5 @@
 package com.gusparro.toauth.api.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gusparro.toauth.domain.entities.AppUser;
 import com.gusparro.toauth.domain.services.AppUserService;
 import lombok.RequiredArgsConstructor;
@@ -9,18 +8,16 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.CREATED;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,9 +37,14 @@ public class AppUserController {
     }
 
     @PostMapping
-    @ResponseStatus(CREATED)
-    public AppUser persist(@RequestBody AppUser appUser) {
-        return appUserService.save(appUser);
+    public ResponseEntity<AppUser> persist(@RequestBody AppUser appUser) {
+        AppUser persistedAppUser = appUserService.save(appUser);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
+                .path("/{id}")
+                .buildAndExpand(persistedAppUser.getId())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(persistedAppUser);
     }
 
     @PutMapping("/{id}")
@@ -72,7 +74,22 @@ public class AppUserController {
                 return ResponseEntity.noContent().build();
             }).orElse(ResponseEntity.notFound().build());
         } catch (DataIntegrityViolationException e) {
+            e.printStackTrace();
+
             return ResponseEntity.status(CONFLICT).build();
+        }
+    }
+
+    @PostMapping("/{id}/add-role")
+    public ResponseEntity<?> addRoleToAppUser(@PathVariable Long id, @RequestBody String roleName) {
+        try {
+            appUserService.addRoleToAppUser(id, roleName);
+
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+
+            return ResponseEntity.notFound().build();
         }
     }
 
