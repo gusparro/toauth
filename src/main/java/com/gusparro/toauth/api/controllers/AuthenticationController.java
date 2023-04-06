@@ -1,8 +1,8 @@
 package com.gusparro.toauth.api.controllers;
 
-import com.gusparro.toauth.domain.dtos.AuthenticationResponse;
-import com.gusparro.toauth.domain.dtos.SignInRequestForm;
-import com.gusparro.toauth.domain.dtos.SignUpRequestForm;
+import com.gusparro.toauth.api.dtos.AuthenticationResponse;
+import com.gusparro.toauth.api.dtos.SignInRequestForm;
+import com.gusparro.toauth.api.dtos.SignUpRequestForm;
 import com.gusparro.toauth.domain.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

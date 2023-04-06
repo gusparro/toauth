@@ -1,9 +1,9 @@
 package com.gusparro.toauth.domain.services;
 
 import com.gusparro.toauth.api.security.JwtService;
-import com.gusparro.toauth.domain.dtos.AuthenticationResponse;
-import com.gusparro.toauth.domain.dtos.SignInRequestForm;
-import com.gusparro.toauth.domain.dtos.SignUpRequestForm;
+import com.gusparro.toauth.api.dtos.AuthenticationResponse;
+import com.gusparro.toauth.api.dtos.SignInRequestForm;
+import com.gusparro.toauth.api.dtos.SignUpRequestForm;
 import com.gusparro.toauth.domain.entities.AppUser;
 import com.gusparro.toauth.domain.repositories.AppUserRepository;
 import lombok.RequiredArgsConstructor;

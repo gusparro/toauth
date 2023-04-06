@@ -1,6 +1,5 @@
-package com.gusparro.toauth.domain.dtos;
+package com.gusparro.toauth.api.dtos;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignUpRequestForm {
-
-    private String fullName;
-
-    private String email;
+public class SignInRequestForm {
 
     private String username;
 

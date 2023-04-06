@@ -1,4 +1,4 @@
-package com.gusparro.toauth.domain.dtos;
+package com.gusparro.toauth.api.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
