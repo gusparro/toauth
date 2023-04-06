@@ -1,13 +1,15 @@
 spring:
-  datasource: # = DATA SOURCE
+  datasource:
     url: jdbc:postgresql://localhost/toauth
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-    hikari: # = CONNECTION POOL
+    hikari:
       minimum-idle: 3
       maximum-pool-size: 5
       idle-timeout: 10000
-  jpa: # = JPA / HIBERNATE
+  jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    locations: classpath:db/migration, classpath:db/develop-data

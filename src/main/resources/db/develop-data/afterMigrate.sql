@@ -1,3 +1,11 @@
+DELETE FROM appuser_role WHERE TRUE;
+DELETE FROM appuser WHERE TRUE;
+DELETE FROM role WHERE TRUE;
+
+ALTER SEQUENCE appuser_role_id_seq RESTART WITH 1;
+ALTER SEQUENCE appuser_id_seq RESTART WITH 1;
+ALTER SEQUENCE role_id_seq RESTART WITH 1;
+
 INSERT INTO appuser (id, full_name, email, username, password)
 VALUES (1, 'Gustavo Ferreira Parro', 'gustavo.ferreira.parro@gmail.com', 'gusparro',
         '$2a$10$I0Ti.ZrqTA02wuCzStTmK.ywtZSZ1a76FGGUqlQzJA8lwMZoQgN36')
