@@ -29,17 +29,17 @@ public class AppUserController {
     private final AppUserService appUserService;
 
     @ExceptionHandler(AppUserNotFoundException.class)
-    public ResponseEntity<String> handleAppUserNotFoundException(AppUserNotFoundException exception) {
+    public ResponseEntity<?> handleAppUserNotFoundException(AppUserNotFoundException exception) {
         return ResponseEntity.status(NOT_FOUND).body(exception.getMessage());
     }
 
     @ExceptionHandler(AppUserInUseException.class)
-    public ResponseEntity<String> handleAppUserInUseException(AppUserInUseException exception) {
+    public ResponseEntity<?> handleAppUserInUseException(AppUserInUseException exception) {
         return ResponseEntity.status(CONFLICT).body(exception.getMessage());
     }
 
     @ExceptionHandler(RoleNotFoundException.class)
-    public ResponseEntity<String> handleRoleNotFoundException(RoleNotFoundException exception) {
+    public ResponseEntity<?> handleRoleNotFoundException(RoleNotFoundException exception) {
         return ResponseEntity.status(BAD_REQUEST).body(exception.getMessage());
     }
 
