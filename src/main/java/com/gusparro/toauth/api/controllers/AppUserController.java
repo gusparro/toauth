@@ -30,41 +30,6 @@ public class AppUserController {
 
     private final AppUserService appUserService;
 
-    private ErrorResponse errorResponse;
-
-    @ExceptionHandler(AppUserNotFoundException.class)
-    public ResponseEntity<?> handleAppUserNotFoundException(AppUserNotFoundException exception) {
-        errorResponse = ErrorResponse.builder()
-                .message(exception.getMessage())
-                .status("404")
-                .dateTime(LocalDateTime.now())
-                .build();
-
-        return ResponseEntity.status(NOT_FOUND).body(errorResponse);
-    }
-
-    @ExceptionHandler(AppUserInUseException.class)
-    public ResponseEntity<?> handleAppUserInUseException(AppUserInUseException exception) {
-        errorResponse = ErrorResponse.builder()
-                .message(exception.getMessage())
-                .status("409")
-                .dateTime(LocalDateTime.now())
-                .build();
-
-        return ResponseEntity.status(CONFLICT).body(errorResponse);
-    }
-
-    @ExceptionHandler(RoleNotFoundException.class)
-    public ResponseEntity<?> handleRoleNotFoundException(RoleNotFoundException exception) {
-        errorResponse = ErrorResponse.builder()
-                .message(exception.getMessage())
-                .status("400")
-                .dateTime(LocalDateTime.now())
-                .build();
-
-        return ResponseEntity.status(BAD_REQUEST).body(errorResponse);
-    }
-
     @GetMapping
     public List<AppUser> getAll() {
         return appUserService.findAll();

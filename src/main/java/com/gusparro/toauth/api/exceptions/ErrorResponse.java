@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class ErrorResponse {
 
     private String message;
-    private String status;
+    private int status;
     private LocalDateTime dateTime;
 
 }
