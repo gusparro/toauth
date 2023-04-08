@@ -1,5 +1,6 @@
 package com.gusparro.toauth.api.controllers;
 
+import com.gusparro.toauth.api.exceptions.ErrorResponse;
 import com.gusparro.toauth.domain.entities.AppUser;
 import com.gusparro.toauth.domain.exceptions.appuser.AppUserInUseException;
 import com.gusparro.toauth.domain.exceptions.appuser.AppUserNotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.beans.PropertyDescriptor;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,19 +30,39 @@ public class AppUserController {
 
     private final AppUserService appUserService;
 
+    private ErrorResponse errorResponse;
+
     @ExceptionHandler(AppUserNotFoundException.class)
     public ResponseEntity<?> handleAppUserNotFoundException(AppUserNotFoundException exception) {
-        return ResponseEntity.status(NOT_FOUND).body(exception.getMessage());
+        errorResponse = ErrorResponse.builder()
+                .message(exception.getMessage())
+                .status("404")
+                .dateTime(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(AppUserInUseException.class)
     public ResponseEntity<?> handleAppUserInUseException(AppUserInUseException exception) {
-        return ResponseEntity.status(CONFLICT).body(exception.getMessage());
+        errorResponse = ErrorResponse.builder()
+                .message(exception.getMessage())
+                .status("409")
+                .dateTime(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(CONFLICT).body(errorResponse);
     }
 
     @ExceptionHandler(RoleNotFoundException.class)
     public ResponseEntity<?> handleRoleNotFoundException(RoleNotFoundException exception) {
-        return ResponseEntity.status(BAD_REQUEST).body(exception.getMessage());
+        errorResponse = ErrorResponse.builder()
+                .message(exception.getMessage())
+                .status("400")
+                .dateTime(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(BAD_REQUEST).body(errorResponse);
     }
 
     @GetMapping
