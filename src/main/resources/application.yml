@@ -13,3 +13,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     locations: classpath:db/migration, classpath:db/develop-data
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
