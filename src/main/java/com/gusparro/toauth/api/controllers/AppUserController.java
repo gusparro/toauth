@@ -1,10 +1,6 @@
 package com.gusparro.toauth.api.controllers;
 
-import com.gusparro.toauth.api.exceptions.ErrorResponse;
 import com.gusparro.toauth.domain.entities.AppUser;
-import com.gusparro.toauth.domain.exceptions.appuser.AppUserInUseException;
-import com.gusparro.toauth.domain.exceptions.appuser.AppUserNotFoundException;
-import com.gusparro.toauth.domain.exceptions.role.RoleNotFoundException;
 import com.gusparro.toauth.domain.services.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -16,7 +12,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.beans.PropertyDescriptor;
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
