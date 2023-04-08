@@ -2,23 +2,30 @@ package com.gusparro.toauth.domain.services;
 
 import com.gusparro.toauth.domain.entities.AppUser;
 import com.gusparro.toauth.domain.entities.Role;
+import com.gusparro.toauth.domain.exceptions.appuser.AppUserInUseException;
+import com.gusparro.toauth.domain.exceptions.appuser.AppUserNotFoundException;
+import com.gusparro.toauth.domain.exceptions.role.RoleNotFoundException;
 import com.gusparro.toauth.domain.repositories.AppUserRepository;
-import com.gusparro.toauth.domain.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ServerWebInputException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class AppUserService {
 
+    private static final String USER_NOT_FOUND_MESSAGE = "User with id equal to %d does not exist.";
+    private static final String USER_IN_USE_MESSAGE = "User with id equal to %d cannot be removed, as it is in use.";
+
     private final AppUserRepository appUserRepository;
 
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
     private final PasswordEncoder encoder;
 
@@ -26,12 +33,9 @@ public class AppUserService {
         return appUserRepository.findAll();
     }
 
-    public Optional<AppUser> findById(Long id) {
-        return appUserRepository.findById(id);
-    }
-
-    public Optional<AppUser> findByUsername(String username) {
-        return appUserRepository.findByUsername(username);
+    public AppUser findById(Long id) {
+        return appUserRepository.findById(id)
+                .orElseThrow(() -> new AppUserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, id)));
     }
 
     public AppUser save(AppUser appUser) {
@@ -43,16 +47,21 @@ public class AppUserService {
     }
 
     public void deleteById(Long id) {
-        appUserRepository.deleteById(id);
+        try {
+            appUserRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException exception) {
+            exception.printStackTrace();
+            throw new AppUserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, id));
+        } catch (DataIntegrityViolationException exception) {
+            exception.printStackTrace();
+            throw new AppUserInUseException(String.format(USER_IN_USE_MESSAGE, id));
+        }
     }
 
     @Transactional
-    public void addRoleToAppUser(Long appUserId, String roleName) {
-        AppUser appUser = appUserRepository.findById(appUserId)
-                .orElseThrow(() -> new RuntimeException("AppUser not found: " + appUserId));
-
-        Role role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
+    public void addRoleToAppUser(Long appUserId, Long roleId) {
+        AppUser appUser = this.findById(appUserId);
+        Role role = roleService.findById(roleId);
 
         if (appUser.getRoles().contains(role)) {
             return;

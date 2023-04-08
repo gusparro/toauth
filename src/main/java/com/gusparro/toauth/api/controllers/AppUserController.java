@@ -1,12 +1,14 @@
 package com.gusparro.toauth.api.controllers;
 
 import com.gusparro.toauth.domain.entities.AppUser;
+import com.gusparro.toauth.domain.exceptions.appuser.AppUserInUseException;
+import com.gusparro.toauth.domain.exceptions.appuser.AppUserNotFoundException;
+import com.gusparro.toauth.domain.exceptions.role.RoleNotFoundException;
 import com.gusparro.toauth.domain.services.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -17,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,14 +28,29 @@ public class AppUserController {
 
     private final AppUserService appUserService;
 
+    @ExceptionHandler(AppUserNotFoundException.class)
+    public ResponseEntity<String> handleAppUserNotFoundException(AppUserNotFoundException exception) {
+        return ResponseEntity.status(NOT_FOUND).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(AppUserInUseException.class)
+    public ResponseEntity<String> handleAppUserInUseException(AppUserInUseException exception) {
+        return ResponseEntity.status(CONFLICT).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<String> handleRoleNotFoundException(RoleNotFoundException exception) {
+        return ResponseEntity.status(BAD_REQUEST).body(exception.getMessage());
+    }
+
     @GetMapping
     public List<AppUser> getAll() {
         return appUserService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AppUser> getById(@PathVariable Long id) {
-        return appUserService.findById(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public AppUser getById(@PathVariable Long id) {
+        return appUserService.findById(id);
     }
 
     @PostMapping
@@ -48,49 +65,30 @@ public class AppUserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AppUser> update(@PathVariable Long id, @RequestBody AppUser receivedAppUser) {
-        return appUserService.findById(id).map(appUser -> {
-            BeanUtils.copyProperties(receivedAppUser, appUser, "id");
-            appUserService.save(appUser);
-            return ResponseEntity.ok(appUser);
-        }).orElse(ResponseEntity.notFound().build());
+    public AppUser update(@PathVariable Long id, @RequestBody AppUser receivedAppUser) {
+        AppUser appUser = appUserService.findById(id);
+        BeanUtils.copyProperties(receivedAppUser, appUser, "id");
+
+        return appUserService.save(appUser);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<AppUser> partialUpdate(@PathVariable Long id, @RequestBody AppUser receivedAppUser) {
-        return appUserService.findById(id).map(appUser -> {
-            BeanUtils.copyProperties(receivedAppUser, appUser, getNullPropertyNames(receivedAppUser));
+    public AppUser partialUpdate(@PathVariable Long id, @RequestBody AppUser receivedAppUser) {
+        AppUser appUser = appUserService.findById(id);
+        BeanUtils.copyProperties(receivedAppUser, appUser, getNullPropertyNames(receivedAppUser));
 
-            appUserService.save(appUser);
-            return ResponseEntity.ok(appUser);
-        }).orElse(ResponseEntity.notFound().build());
+        return appUserService.save(appUser);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        try {
-            return appUserService.findById(id).map(appUser -> {
-                appUserService.deleteById(id);
-                return ResponseEntity.noContent().build();
-            }).orElse(ResponseEntity.notFound().build());
-        } catch (DataIntegrityViolationException e) {
-            e.printStackTrace();
-
-            return ResponseEntity.status(CONFLICT).build();
-        }
+    @ResponseStatus(NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        appUserService.deleteById(id);
     }
 
-    @PostMapping("/{id}/add-role")
-    public ResponseEntity<?> addRoleToAppUser(@PathVariable Long id, @RequestBody String roleName) {
-        try {
-            appUserService.addRoleToAppUser(id, roleName);
-
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-
-            return ResponseEntity.notFound().build();
-        }
+    @PostMapping("/{idAppUser}/add-role/{idRole}")
+    public void addRoleToAppUser(@PathVariable Long idAppUser, @PathVariable Long idRole) {
+        appUserService.addRoleToAppUser(idAppUser, idRole);
     }
 
     private String[] getNullPropertyNames(AppUser receivedAppUser) {
