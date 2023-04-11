@@ -2,6 +2,8 @@ package com.gusparro.toauth.domain.entities;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,15 +29,20 @@ public class AppUser implements UserDetails {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @NotBlank
     @Column(nullable = false)
     private String fullName;
 
+    @Email
+    @NotBlank
     @Column(unique = true, nullable = false)
     private String email;
 
+    @NotBlank
     @Column(unique = true, nullable = false)
     private String username;
 
+    @NotBlank
     @Column(nullable = false)
     private String password;
 

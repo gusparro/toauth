@@ -4,6 +4,7 @@ import com.gusparro.toauth.api.dtos.AuthenticationResponse;
 import com.gusparro.toauth.api.dtos.SignInRequestForm;
 import com.gusparro.toauth.api.dtos.SignUpRequestForm;
 import com.gusparro.toauth.domain.services.AuthenticationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/signUp")
-    public ResponseEntity<AuthenticationResponse> signUp(@RequestBody SignUpRequestForm signUpRequestForm) {
+    public ResponseEntity<AuthenticationResponse> signUp(@RequestBody @Valid SignUpRequestForm signUpRequestForm) {
         return ResponseEntity.ok(authenticationService.signUp(signUpRequestForm));
     }
 

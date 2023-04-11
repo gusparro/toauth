@@ -2,6 +2,7 @@ package com.gusparro.toauth.api.controllers;
 
 import com.gusparro.toauth.domain.entities.AppUser;
 import com.gusparro.toauth.domain.services.AppUserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
@@ -16,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RequiredArgsConstructor
 @RestController
@@ -36,7 +37,7 @@ public class AppUserController {
     }
 
     @PostMapping
-    public ResponseEntity<AppUser> persist(@RequestBody AppUser appUser) {
+    public ResponseEntity<AppUser> persist(@RequestBody @Valid AppUser appUser) {
         AppUser persistedAppUser = appUserService.save(appUser);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .path("/{id}")

@@ -2,6 +2,7 @@ package com.gusparro.toauth.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -23,9 +24,12 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @NotBlank
+    @Column(unique = true, nullable = false)
     private String name;
 
+    @NotBlank
+    @Column(nullable = false)
     private String description;
 
     @JsonIgnore
