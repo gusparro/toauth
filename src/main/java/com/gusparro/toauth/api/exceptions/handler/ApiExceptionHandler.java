@@ -5,6 +5,9 @@ import com.gusparro.toauth.api.exceptions.ProblemDetails;
 import com.gusparro.toauth.domain.exceptions.appuser.AppUserInUseException;
 import com.gusparro.toauth.domain.exceptions.appuser.AppUserNotFoundException;
 import com.gusparro.toauth.domain.exceptions.role.RoleNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,9 @@ import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @Autowired
+    private MessageSource messageSource;
 
     @ExceptionHandler(AppUserNotFoundException.class)
     public ResponseEntity<?> handleAppUserNotFoundException(AppUserNotFoundException exception) {
@@ -62,10 +68,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   WebRequest request) {
         BindingResult bindingResult = exception.getBindingResult();
         List<InvalidField> fields = bindingResult.getFieldErrors().stream()
-                .map(fieldError -> InvalidField.builder()
-                        .name(fieldError.getField())
-                        .errorMessage(fieldError.getDefaultMessage())
-                        .build())
+                .map(fieldError -> {
+                    String errorMessage = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+
+                   return InvalidField.builder()
+                            .name(fieldError.getField())
+                            .errorMessage(errorMessage)
+                            .build();
+                })
                 .collect(Collectors.toList());
 
         ProblemDetails problemDetails = ProblemDetails.builder()
