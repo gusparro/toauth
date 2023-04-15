@@ -4,7 +4,6 @@ import com.gusparro.toauth.domain.entities.AppUser;
 import com.gusparro.toauth.domain.entities.Role;
 import com.gusparro.toauth.domain.exceptions.appuser.AppUserInUseException;
 import com.gusparro.toauth.domain.exceptions.appuser.AppUserNotFoundException;
-import com.gusparro.toauth.domain.exceptions.role.RoleNotFoundException;
 import com.gusparro.toauth.domain.repositories.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,7 +11,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ServerWebInputException;
 
 import java.util.List;
 
