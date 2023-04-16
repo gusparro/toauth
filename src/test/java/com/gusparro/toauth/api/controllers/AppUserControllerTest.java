@@ -10,6 +10,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 
 import static io.restassured.http.ContentType.JSON;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -30,14 +31,36 @@ public class AppUserControllerTest {
         RestAssured.port = port;
     }
 
-    @Test // Security Disabled
-    public void itShouldStatusHttp200WhenCallEndpointUsers() {
+    @Test
+    public void itShouldReturnStatusHttp200WhenCallEndpointUsers() {
         RestAssured.given()
                 .accept(JSON)
                 .when()
                 .get()
                 .then()
                 .statusCode(OK.value());
+    }
+
+    @Test
+    public void itShouldReturnStatusHttp200WhenCallEndpointUsersWithValidPathParamsForID() {
+        RestAssured.given()
+                .pathParams("id", 1)
+                .accept(JSON)
+                .when()
+                .get("/{id}")
+                .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    public void itShouldReturnStatusHttp404WhenCallEndpointUsersWithInvalidPathParamsForID() {
+        RestAssured.given()
+                .pathParams("id", 100)
+                .accept(JSON)
+                .when()
+                .get("/{id}")
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 
 }
