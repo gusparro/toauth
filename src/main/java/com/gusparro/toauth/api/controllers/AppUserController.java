@@ -1,6 +1,9 @@
 package com.gusparro.toauth.api.controllers;
 
+import com.gusparro.toauth.api.dtos.appuser.AppUserForm;
+import com.gusparro.toauth.api.dtos.appuser.AppUserResponse;
 import com.gusparro.toauth.domain.entities.AppUser;
+import com.gusparro.toauth.domain.entities.Role;
 import com.gusparro.toauth.domain.services.AppUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
@@ -27,40 +31,40 @@ public class AppUserController {
     private final AppUserService appUserService;
 
     @GetMapping
-    public List<AppUser> getAll() {
-        return appUserService.findAll();
+    public List<AppUserResponse> getAll() {
+        return appUserService.findAll().stream().map(AppUserResponse::fromAppUser).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public AppUser getById(@PathVariable Long id) {
-        return appUserService.findById(id);
+    public AppUserResponse getById(@PathVariable Long id) {
+        return AppUserResponse.fromAppUser(appUserService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<AppUser> persist(@RequestBody @Valid AppUser appUser) {
-        AppUser persistedAppUser = appUserService.save(appUser);
+    public ResponseEntity<AppUserResponse> persist(@RequestBody @Valid AppUserForm appUserForm) {
+        AppUser persistedAppUser = appUserService.save(appUserForm.toAppUser());
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .path("/{id}")
                 .buildAndExpand(persistedAppUser.getId())
                 .toUri();
 
-        return ResponseEntity.created(uri).body(persistedAppUser);
+        return ResponseEntity.created(uri).body(AppUserResponse.fromAppUser(persistedAppUser));
     }
 
     @PutMapping("/{id}")
-    public AppUser update(@PathVariable Long id, @RequestBody AppUser receivedAppUser) {
+    public AppUserResponse update(@PathVariable Long id, @RequestBody AppUserForm appUserForm) {
         AppUser appUser = appUserService.findById(id);
-        BeanUtils.copyProperties(receivedAppUser, appUser, "id");
+        BeanUtils.copyProperties(appUserForm.toAppUser(), appUser, "id");
 
-        return appUserService.save(appUser);
+        return AppUserResponse.fromAppUser(appUserService.save(appUser));
     }
 
     @PatchMapping("/{id}")
-    public AppUser partialUpdate(@PathVariable Long id, @RequestBody AppUser receivedAppUser) {
+    public AppUserResponse partialUpdate(@PathVariable Long id, @RequestBody AppUserForm appUserForm) {
         AppUser appUser = appUserService.findById(id);
-        BeanUtils.copyProperties(receivedAppUser, appUser, getNullPropertyNames(receivedAppUser));
+        BeanUtils.copyProperties(appUserForm.toAppUser(), appUser, getNullPropertyNames(appUserForm.toAppUser()));
 
-        return appUserService.save(appUser);
+        return AppUserResponse.fromAppUser(appUserService.save(appUser));
     }
 
     @DeleteMapping("/{id}")
