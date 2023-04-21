@@ -1,4 +1,4 @@
-package com.gusparro.toauth.api.dtos;
+package com.gusparro.toauth.api.dtos.auth;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;

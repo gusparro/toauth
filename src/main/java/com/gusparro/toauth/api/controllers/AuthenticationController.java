@@ -1,8 +1,8 @@
 package com.gusparro.toauth.api.controllers;
 
-import com.gusparro.toauth.api.dtos.AuthenticationResponse;
-import com.gusparro.toauth.api.dtos.SignInRequestForm;
-import com.gusparro.toauth.api.dtos.SignUpRequestForm;
+import com.gusparro.toauth.api.dtos.auth.AuthenticationResponse;
+import com.gusparro.toauth.api.dtos.auth.SignInRequestForm;
+import com.gusparro.toauth.api.dtos.auth.SignUpRequestForm;
 import com.gusparro.toauth.domain.services.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
