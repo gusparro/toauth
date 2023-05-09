@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class AppUserForm {
                 .email(email)
                 .username(username)
                 .password(password)
-                .roles(roles.stream().map(RoleForAppUser::toRole).collect(Collectors.toList()))
+                .roles(roles != null ? roles.stream().map(RoleForAppUser::toRole).collect(Collectors.toList()) : Collections.emptyList())
                 .build();
     }
 
