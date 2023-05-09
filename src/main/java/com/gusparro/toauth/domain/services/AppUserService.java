@@ -41,6 +41,12 @@ public class AppUserService {
             appUser.setPassword(encoder.encode(appUser.getPassword()));
         }
 
+        if (!appUser.getRoles().isEmpty()) {
+            appUser.getRoles().replaceAll(role -> roleService.findById(role.getId()));
+        }
+
+        System.out.println(">>>>>>>>>>>>>>>>>>" + appUser.getRoles());
+
         return appUserRepository.save(appUser);
     }
 
