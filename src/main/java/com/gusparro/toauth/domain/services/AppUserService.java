@@ -2,6 +2,7 @@ package com.gusparro.toauth.domain.services;
 
 import com.gusparro.toauth.domain.entities.AppUser;
 import com.gusparro.toauth.domain.entities.Role;
+import com.gusparro.toauth.domain.exceptions.appuser.AppUserDuplicateKeyException;
 import com.gusparro.toauth.domain.exceptions.appuser.AppUserInUseException;
 import com.gusparro.toauth.domain.exceptions.appuser.AppUserNotFoundException;
 import com.gusparro.toauth.domain.repositories.AppUserRepository;
@@ -20,6 +21,8 @@ public class AppUserService {
 
     private static final String USER_NOT_FOUND_MESSAGE = "User with id equal to %d does not exist.";
     private static final String USER_IN_USE_MESSAGE = "User with id equal to %d cannot be removed, as it is in use.";
+    private static final String USER_DUPLICATE_EMAIL_MESSAGE = "This email is already in use.";
+    private static final String USER_DUPLICATE_USERNAME_MESSAGE = "This username is already in use";
 
     private final AppUserRepository appUserRepository;
 
@@ -37,15 +40,23 @@ public class AppUserService {
     }
 
     public AppUser save(AppUser appUser) {
-        if (appUser.getPassword() != null) {
-            appUser.setPassword(encoder.encode(appUser.getPassword()));
-        }
+        try {
+            if (appUser.getPassword() != null) {
+                appUser.setPassword(encoder.encode(appUser.getPassword()));
+            }
 
-        if (appUser.getRoles() != null && !appUser.getRoles().isEmpty()) {
-            appUser.getRoles().replaceAll(role -> roleService.findById(role.getId()));
-        }
+            if (appUser.getRoles() != null && !appUser.getRoles().isEmpty()) {
+                appUser.getRoles().replaceAll(role -> roleService.findById(role.getId()));
+            }
 
-        return appUserRepository.save(appUser);
+            return appUserRepository.save(appUser);
+        } catch (DataIntegrityViolationException exception) {
+            if (exception.getMessage().contains("email")) {
+                throw new AppUserDuplicateKeyException(USER_DUPLICATE_EMAIL_MESSAGE);
+            }
+
+            throw new AppUserDuplicateKeyException(USER_DUPLICATE_USERNAME_MESSAGE);
+        }
     }
 
     public void deleteById(Long id) {

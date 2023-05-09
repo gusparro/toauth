@@ -2,6 +2,7 @@ package com.gusparro.toauth.api.exceptions.handler;
 
 import com.gusparro.toauth.api.exceptions.InvalidField;
 import com.gusparro.toauth.api.exceptions.ProblemDetails;
+import com.gusparro.toauth.domain.exceptions.appuser.AppUserDuplicateKeyException;
 import com.gusparro.toauth.domain.exceptions.appuser.AppUserInUseException;
 import com.gusparro.toauth.domain.exceptions.appuser.AppUserNotFoundException;
 import com.gusparro.toauth.domain.exceptions.role.RoleNotFoundException;
@@ -45,6 +46,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemDetails problemDetails = ProblemDetails.builder()
                 .status(409)
                 .title("AppUser in use.")
+                .detail(exception.getMessage())
+                .build();
+
+        return ResponseEntity.status(CONFLICT).body(problemDetails);
+    }
+
+    @ExceptionHandler(AppUserDuplicateKeyException.class)
+    public ResponseEntity<?> handleAppUserDuplicateKeyException(AppUserDuplicateKeyException exception) {
+        ProblemDetails problemDetails = ProblemDetails.builder()
+                .status(409)
+                .title("Duplicate Key")
                 .detail(exception.getMessage())
                 .build();
 
