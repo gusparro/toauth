@@ -83,4 +83,16 @@ public class AppUserService {
         appUser.getRoles().add(role);
     }
 
+    @Transactional
+    public void removeRoleFromAppUser(Long appUserId, Long roleId) {
+        AppUser appUser = this.findById(appUserId);
+        Role role = roleService.findById(roleId);
+
+        if (!appUser.getRoles().contains(role)) {
+            return;
+        }
+
+        appUser.getRoles().remove(role);
+    }
+
 }

@@ -2,6 +2,7 @@ package com.gusparro.toauth.api.controllers;
 
 import com.gusparro.toauth.api.dtos.appuser.AppUserForm;
 import com.gusparro.toauth.api.dtos.appuser.AppUserResponse;
+import com.gusparro.toauth.api.dtos.role.RoleResponse;
 import com.gusparro.toauth.domain.entities.AppUser;
 import com.gusparro.toauth.domain.entities.Role;
 import com.gusparro.toauth.domain.services.AppUserService;
@@ -40,6 +41,11 @@ public class AppUserController {
         return AppUserResponse.fromAppUser(appUserService.findById(id));
     }
 
+    @GetMapping("/{id}/roles")
+    public List<RoleResponse> getRolesPerAppUser(@PathVariable Long id) {
+        return AppUserResponse.fromAppUser(appUserService.findById(id)).roles();
+    }
+
     @PostMapping
     public ResponseEntity<AppUserResponse> persist(@RequestBody @Valid AppUserForm appUserForm) {
         AppUser persistedAppUser = appUserService.save(appUserForm.toAppUser());
@@ -73,9 +79,16 @@ public class AppUserController {
         appUserService.deleteById(id);
     }
 
-    @PostMapping("/{idAppUser}/add-role/{idRole}")
+    @PostMapping("/{idAppUser}/roles/add/{idRole}")
+    @ResponseStatus(NO_CONTENT)
     public void addRoleToAppUser(@PathVariable Long idAppUser, @PathVariable Long idRole) {
         appUserService.addRoleToAppUser(idAppUser, idRole);
+    }
+
+    @PostMapping("/{idAppUser}/roles/remove/{idRole}")
+    @ResponseStatus(NO_CONTENT)
+    public void removeRoleFromAppUser(@PathVariable Long idAppUser, @PathVariable Long idRole) {
+        appUserService.removeRoleFromAppUser(idAppUser, idRole);
     }
 
     private String[] getNullPropertyNames(AppUser receivedAppUser) {
