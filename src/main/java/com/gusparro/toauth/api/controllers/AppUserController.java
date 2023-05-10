@@ -79,13 +79,13 @@ public class AppUserController {
         appUserService.deleteById(id);
     }
 
-    @PostMapping("/{idAppUser}/roles/add/{idRole}")
+    @PostMapping("/{idAppUser}/roles/{idRole}")
     @ResponseStatus(NO_CONTENT)
     public void addRoleToAppUser(@PathVariable Long idAppUser, @PathVariable Long idRole) {
         appUserService.addRoleToAppUser(idAppUser, idRole);
     }
 
-    @PostMapping("/{idAppUser}/roles/remove/{idRole}")
+    @DeleteMapping("/{idAppUser}/roles/{idRole}")
     @ResponseStatus(NO_CONTENT)
     public void removeRoleFromAppUser(@PathVariable Long idAppUser, @PathVariable Long idRole) {
         appUserService.removeRoleFromAppUser(idAppUser, idRole);
