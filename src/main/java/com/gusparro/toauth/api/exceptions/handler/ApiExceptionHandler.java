@@ -5,6 +5,7 @@ import com.gusparro.toauth.api.exceptions.ProblemDetails;
 import com.gusparro.toauth.domain.exceptions.appuser.AppUserDuplicateKeyException;
 import com.gusparro.toauth.domain.exceptions.appuser.AppUserInUseException;
 import com.gusparro.toauth.domain.exceptions.appuser.AppUserNotFoundException;
+import com.gusparro.toauth.domain.exceptions.role.RoleInUseException;
 import com.gusparro.toauth.domain.exceptions.role.RoleNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -66,12 +67,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(RoleNotFoundException.class)
     public ResponseEntity<?> handleRoleNotFoundException(RoleNotFoundException exception) {
         ProblemDetails problemDetails = ProblemDetails.builder()
-                .status(400)
+                .status(404)
                 .title("Role does not exist.")
                 .detail(exception.getMessage())
                 .build();
 
-        return ResponseEntity.status(BAD_REQUEST).body(problemDetails);
+        return ResponseEntity.status(NOT_FOUND).body(problemDetails);
+    }
+
+    @ExceptionHandler(RoleInUseException.class)
+    public ResponseEntity<?> handleRoleInUseException(RoleInUseException exception) {
+        ProblemDetails problemDetails = ProblemDetails.builder()
+                .status(409)
+                .title("Role in use.")
+                .detail(exception.getMessage())
+                .build();
+
+        return ResponseEntity.status(CONFLICT).body(problemDetails);
     }
 
     @Override

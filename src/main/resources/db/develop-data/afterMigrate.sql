@@ -33,6 +33,10 @@ INSERT INTO role (name, description)
 VALUES ('ADMINISTRATOR_ROLE', 'Profile created for use by company administrators.')
 ON CONFLICT DO NOTHING;
 
+INSERT INTO role (name, description)
+VALUES ('IT_TEST_ROLE', 'Profile created for use in integrations tests.')
+        ON CONFLICT DO NOTHING;
+
 INSERT INTO appuser_role (appuser_id, role_id)
 VALUES (1, 1)
 ON CONFLICT DO NOTHING;
