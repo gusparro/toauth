@@ -31,6 +31,8 @@ public class AppUserController {
 
     private final AppUserService appUserService;
 
+    /* GET METHODS */
+
     @GetMapping
     public List<AppUserResponse> getAll() {
         return appUserService.findAll().stream().map(AppUserResponse::fromAppUser).collect(Collectors.toList());
@@ -46,6 +48,8 @@ public class AppUserController {
         return AppUserResponse.fromAppUser(appUserService.findById(id)).roles();
     }
 
+    /* POST METHODS */
+
     @PostMapping
     public ResponseEntity<AppUserResponse> persist(@RequestBody @Valid AppUserForm appUserForm) {
         AppUser persistedAppUser = appUserService.save(appUserForm.toAppUser());
@@ -57,6 +61,14 @@ public class AppUserController {
         return ResponseEntity.created(uri).body(AppUserResponse.fromAppUser(persistedAppUser));
     }
 
+    @PostMapping("/{idAppUser}/roles/{idRole}")
+    @ResponseStatus(NO_CONTENT)
+    public void addRoleToAppUser(@PathVariable Long idAppUser, @PathVariable Long idRole) {
+        appUserService.addRoleToAppUser(idAppUser, idRole);
+    }
+
+    /* PUT METHODS */
+
     @PutMapping("/{id}")
     public AppUserResponse update(@PathVariable Long id, @RequestBody AppUserForm appUserForm) {
         AppUser appUser = appUserService.findById(id);
@@ -64,6 +76,8 @@ public class AppUserController {
 
         return AppUserResponse.fromAppUser(appUserService.save(appUser));
     }
+
+    /* PATCH METHODS */
 
     @PatchMapping("/{id}")
     public AppUserResponse partialUpdate(@PathVariable Long id, @RequestBody AppUserForm appUserForm) {
@@ -73,16 +87,12 @@ public class AppUserController {
         return AppUserResponse.fromAppUser(appUserService.save(appUser));
     }
 
+    /* DELETE METHODS */
+
     @DeleteMapping("/{id}")
     @ResponseStatus(NO_CONTENT)
     public void delete(@PathVariable Long id) {
         appUserService.deleteById(id);
-    }
-
-    @PostMapping("/{idAppUser}/roles/{idRole}")
-    @ResponseStatus(NO_CONTENT)
-    public void addRoleToAppUser(@PathVariable Long idAppUser, @PathVariable Long idRole) {
-        appUserService.addRoleToAppUser(idAppUser, idRole);
     }
 
     @DeleteMapping("/{idAppUser}/roles/{idRole}")
@@ -90,6 +100,8 @@ public class AppUserController {
     public void removeRoleFromAppUser(@PathVariable Long idAppUser, @PathVariable Long idRole) {
         appUserService.removeRoleFromAppUser(idAppUser, idRole);
     }
+
+    /* PRIVATE METHODS */
 
     private String[] getNullPropertyNames(AppUser receivedAppUser) {
         BeanWrapper beanWrapper = new BeanWrapperImpl(receivedAppUser);
