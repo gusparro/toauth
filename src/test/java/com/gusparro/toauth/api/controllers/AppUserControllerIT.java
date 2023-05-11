@@ -13,7 +13,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static org.springframework.http.HttpStatus.*;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-public class AppUserControllerTest {
+public class AppUserControllerIT {
 
     @Autowired
     private Flyway flyway;
@@ -108,6 +108,30 @@ public class AppUserControllerTest {
                 .statusCode(BAD_REQUEST.value());
     }
 
+    @Test
+    public void itShouldReturnStatusHttp204WhenCallEndpointUsersRolesUsingPostMethodWithValidPathParamsForIdAppUserAndIdRole() {
+        RestAssured.given()
+                .pathParams("idAppUser", 2)
+                .pathParams("idRole", 1)
+                .accept(JSON)
+                .when()
+                .post("/{idAppUser}/roles/{idRole}")
+                .then()
+                .statusCode(NO_CONTENT.value());
+    }
+
+    @Test
+    public void itShouldReturnStatusHttp400WhenCallEndpointUsersRolesUsingPostMethodWithInalidPathParamsForIdAppUserOrIdRole() {
+        RestAssured.given()
+                .pathParams("idAppUser", 2)
+                .pathParams("idRole", 12)
+                .accept(JSON)
+                .when()
+                .post("/{idAppUser}/roles/{idRole}")
+                .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
     /* PUT METHODS */
 
     /* PATCH METHODS */
@@ -174,6 +198,30 @@ public class AppUserControllerTest {
                 .delete("/{id}")
                 .then()
                 .statusCode(NO_CONTENT.value());
+    }
+
+    @Test
+    public void itShouldReturnStatusHttp204WhenCallEndpointUsersRolesUsingDeleteMethodWithValidPathParamsForIdAppUserAndIdRole() {
+        RestAssured.given()
+                .pathParams("idAppUser", 1)
+                .pathParams("idRole", 1)
+                .accept(JSON)
+                .when()
+                .delete("/{idAppUser}/roles/{idRole}")
+                .then()
+                .statusCode(NO_CONTENT.value());
+    }
+
+    @Test
+    public void itShouldReturnStatusHttp400WhenCallEndpointUsersRolesUsingDeleteMethodWithInalidPathParamsForIdAppUserOrIdRole() {
+        RestAssured.given()
+                .pathParams("idAppUser", 12)
+                .pathParams("idRole", 1)
+                .accept(JSON)
+                .when()
+                .post("/{idAppUser}/roles/{idRole}")
+                .then()
+                .statusCode(NOT_FOUND.value());
     }
 
 }
