@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -27,7 +28,7 @@ public class AppUser implements UserDetails {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, updatable = false)
     private String code;
 
     @Column(nullable = false)
@@ -85,6 +86,11 @@ public class AppUser implements UserDetails {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @PrePersist
+    public void atCreated() {
+        this.code = UUID.randomUUID().toString();
     }
 
 }
