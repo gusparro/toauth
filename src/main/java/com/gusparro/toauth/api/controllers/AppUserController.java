@@ -38,14 +38,14 @@ public class AppUserController {
         return appUserService.findAll().stream().map(AppUserResponse::fromAppUser).collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
-    public AppUserResponse getById(@PathVariable Long id) {
-        return AppUserResponse.fromAppUser(appUserService.findById(id));
+    @GetMapping("/{code}")
+    public AppUserResponse getByCode(@PathVariable String code) {
+        return AppUserResponse.fromAppUser(appUserService.findByCode(code));
     }
 
-    @GetMapping("/{id}/roles")
-    public List<RoleResponse> getRolesPerAppUser(@PathVariable Long id) {
-        return AppUserResponse.fromAppUser(appUserService.findById(id)).roles();
+    @GetMapping("/{code}/roles")
+    public List<RoleResponse> getRolesPerAppUser(@PathVariable String code) {
+        return AppUserResponse.fromAppUser(appUserService.findByCode(code)).roles();
     }
 
     /* POST METHODS */
@@ -61,17 +61,17 @@ public class AppUserController {
         return ResponseEntity.created(uri).body(AppUserResponse.fromAppUser(persistedAppUser));
     }
 
-    @PostMapping("/{idAppUser}/roles/{idRole}")
+    @PostMapping("/{codeAppUser}/roles/{idRole}")
     @ResponseStatus(NO_CONTENT)
-    public void addRoleToAppUser(@PathVariable Long idAppUser, @PathVariable Long idRole) {
-        appUserService.addRoleToAppUser(idAppUser, idRole);
+    public void addRoleToAppUser(@PathVariable String codeAppUser, @PathVariable Long idRole) {
+        appUserService.addRoleToAppUser(codeAppUser, idRole);
     }
 
     /* PUT METHODS */
 
-    @PutMapping("/{id}")
-    public AppUserResponse update(@PathVariable Long id, @RequestBody AppUserForm appUserForm) {
-        AppUser appUser = appUserService.findById(id);
+    @PutMapping("/{code}")
+    public AppUserResponse update(@PathVariable String code, @RequestBody AppUserForm appUserForm) {
+        AppUser appUser = appUserService.findByCode(code);
         BeanUtils.copyProperties(appUserForm.toAppUser(), appUser, "id");
 
         return AppUserResponse.fromAppUser(appUserService.save(appUser));
@@ -79,9 +79,9 @@ public class AppUserController {
 
     /* PATCH METHODS */
 
-    @PatchMapping("/{id}")
-    public AppUserResponse partialUpdate(@PathVariable Long id, @RequestBody AppUserForm appUserForm) {
-        AppUser appUser = appUserService.findById(id);
+    @PatchMapping("/{code}")
+    public AppUserResponse partialUpdate(@PathVariable String code, @RequestBody AppUserForm appUserForm) {
+        AppUser appUser = appUserService.findByCode(code);
         BeanUtils.copyProperties(appUserForm.toAppUser(), appUser, getNullPropertyNames(appUserForm.toAppUser()));
 
         return AppUserResponse.fromAppUser(appUserService.save(appUser));
@@ -89,16 +89,16 @@ public class AppUserController {
 
     /* DELETE METHODS */
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{code}")
     @ResponseStatus(NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        appUserService.deleteById(id);
+    public void delete(@PathVariable String code) {
+        appUserService.deleteByCode(code);
     }
 
-    @DeleteMapping("/{idAppUser}/roles/{idRole}")
+    @DeleteMapping("/{codeAppUser}/roles/{idRole}")
     @ResponseStatus(NO_CONTENT)
-    public void removeRoleFromAppUser(@PathVariable Long idAppUser, @PathVariable Long idRole) {
-        appUserService.removeRoleFromAppUser(idAppUser, idRole);
+    public void removeRoleFromAppUser(@PathVariable String codeAppUser, @PathVariable Long idRole) {
+        appUserService.removeRoleFromAppUser(codeAppUser, idRole);
     }
 
     /* PRIVATE METHODS */

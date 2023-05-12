@@ -19,8 +19,8 @@ import java.util.List;
 @Service
 public class AppUserService {
 
-    private static final String USER_NOT_FOUND_MESSAGE = "User with id equal to %d does not exist.";
-    private static final String USER_IN_USE_MESSAGE = "User with id equal to %d cannot be removed, as it is in use.";
+    private static final String USER_NOT_FOUND_MESSAGE = "User with code equal to %s does not exist.";
+    private static final String USER_IN_USE_MESSAGE = "User with id equal to %s cannot be removed, as it is in use.";
     private static final String USER_DUPLICATE_EMAIL_MESSAGE = "This email is already in use.";
     private static final String USER_DUPLICATE_USERNAME_MESSAGE = "This username is already in use";
 
@@ -34,9 +34,9 @@ public class AppUserService {
         return appUserRepository.findAll();
     }
 
-    public AppUser findById(Long id) {
-        return appUserRepository.findById(id)
-                .orElseThrow(() -> new AppUserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, id)));
+    public AppUser findByCode(String code) {
+        return appUserRepository.findByCode(code)
+                .orElseThrow(() -> new AppUserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, code)));
     }
 
     public AppUser save(AppUser appUser) {
@@ -59,21 +59,21 @@ public class AppUserService {
         }
     }
 
-    public void deleteById(Long id) {
+    public void deleteByCode(String code) {
         try {
-            appUserRepository.deleteById(id);
+            appUserRepository.deleteById(this.findByCode(code).getId());
         } catch (EmptyResultDataAccessException exception) {
             exception.printStackTrace();
-            throw new AppUserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, id));
+            throw new AppUserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, code));
         } catch (DataIntegrityViolationException exception) {
             exception.printStackTrace();
-            throw new AppUserInUseException(String.format(USER_IN_USE_MESSAGE, id));
+            throw new AppUserInUseException(String.format(USER_IN_USE_MESSAGE, code));
         }
     }
 
     @Transactional
-    public void addRoleToAppUser(Long appUserId, Long roleId) {
-        AppUser appUser = this.findById(appUserId);
+    public void addRoleToAppUser(String appUserCode, Long roleId) {
+        AppUser appUser = this.findByCode(appUserCode);
         Role role = roleService.findById(roleId);
 
         if (appUser.getRoles().contains(role)) {
@@ -84,8 +84,8 @@ public class AppUserService {
     }
 
     @Transactional
-    public void removeRoleFromAppUser(Long appUserId, Long roleId) {
-        AppUser appUser = this.findById(appUserId);
+    public void removeRoleFromAppUser(String appUserCode, Long roleId) {
+        AppUser appUser = this.findByCode(appUserCode);
         Role role = roleService.findById(roleId);
 
         if (!appUser.getRoles().contains(role)) {
