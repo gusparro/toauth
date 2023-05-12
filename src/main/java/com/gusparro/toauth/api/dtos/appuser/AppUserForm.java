@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
 public class AppUserForm {
 
     @NotBlank
+    private String code;
+
+    @NotBlank
     private String fullName;
 
     @Email
@@ -38,6 +41,7 @@ public class AppUserForm {
 
     public AppUser toAppUser() {
         return AppUser.builder()
+                .code(code)
                 .fullName(fullName)
                 .email(email)
                 .username(username)
