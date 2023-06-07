@@ -34,9 +34,9 @@ public class AppUserService {
         return appUserRepository.findAll();
     }
 
-    public AppUser findByCode(String code) {
-        return appUserRepository.findByCode(code)
-                .orElseThrow(() -> new AppUserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, code)));
+    public AppUser findByCodeUUID(String codeUUID) {
+        return appUserRepository.findByCodeUUID(codeUUID)
+                .orElseThrow(() -> new AppUserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, codeUUID)));
     }
 
     public AppUser save(AppUser appUser) {
@@ -59,21 +59,21 @@ public class AppUserService {
         }
     }
 
-    public void deleteByCode(String code) {
+    public void deleteByCodeUUID(String codeUUID) {
         try {
-            appUserRepository.deleteById(this.findByCode(code).getId());
+            appUserRepository.deleteById(this.findByCodeUUID(codeUUID).getId());
         } catch (EmptyResultDataAccessException exception) {
             exception.printStackTrace();
-            throw new AppUserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, code));
+            throw new AppUserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, codeUUID));
         } catch (DataIntegrityViolationException exception) {
             exception.printStackTrace();
-            throw new AppUserInUseException(String.format(USER_IN_USE_MESSAGE, code));
+            throw new AppUserInUseException(String.format(USER_IN_USE_MESSAGE, codeUUID));
         }
     }
 
     @Transactional
-    public void addRoleToAppUser(String appUserCode, Long roleId) {
-        AppUser appUser = this.findByCode(appUserCode);
+    public void addRoleToAppUser(String appUserCodeUUID, Long roleId) {
+        AppUser appUser = this.findByCodeUUID(appUserCodeUUID);
         Role role = roleService.findById(roleId);
 
         if (appUser.getRoles().contains(role)) {
@@ -84,8 +84,8 @@ public class AppUserService {
     }
 
     @Transactional
-    public void removeRoleFromAppUser(String appUserCode, Long roleId) {
-        AppUser appUser = this.findByCode(appUserCode);
+    public void removeRoleFromAppUser(String appUserCodeUUID, Long roleId) {
+        AppUser appUser = this.findByCodeUUID(appUserCodeUUID);
         Role role = roleService.findById(roleId);
 
         if (!appUser.getRoles().contains(role)) {

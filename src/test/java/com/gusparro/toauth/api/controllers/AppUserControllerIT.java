@@ -45,10 +45,10 @@ public class AppUserControllerIT {
     @Test
     public void itShouldReturnStatusHttp200WhenCallEndpointUsersUsingGetMethodWithValidPathParamsForID() {
         RestAssured.given()
-                .pathParams("id", 1)
+                .pathParams("codeUUID", "ab3b7982-5f0c-4935-b5bd-109f6dfaf59a")
                 .accept(JSON)
                 .when()
-                .get("/{id}")
+                .get("/{codeUUID}")
                 .then()
                 .statusCode(OK.value());
     }
@@ -56,10 +56,10 @@ public class AppUserControllerIT {
     @Test
     public void itShouldReturnStatusHttp404WhenCallEndpointUsersUsingGetMethodWithInvalidPathParamsForID() {
         RestAssured.given()
-                .pathParams("id", 100)
+                .pathParams("codeUUID", "ab3b7982-5f0c-4935-b5bd-109f6dfaf59d")
                 .accept(JSON)
                 .when()
-                .get("/{id}")
+                .get("/{codeUUID}")
                 .then()
                 .statusCode(NOT_FOUND.value());
     }
@@ -73,7 +73,7 @@ public class AppUserControllerIT {
                     "fullName": "Daniel Silva",
                     "username": "dasilva",
                     "email": "dasilva@gmail.com",
-                    "password": "123456"
+                    "password": "12345678"
                 }
                 """;
 
@@ -111,23 +111,26 @@ public class AppUserControllerIT {
     @Test
     public void itShouldReturnStatusHttp204WhenCallEndpointUsersRolesUsingPostMethodWithValidPathParamsForIdAppUserAndIdRole() {
         RestAssured.given()
-                .pathParams("idAppUser", 2)
-                .pathParams("idRole", 1)
+                .pathParams("codeUUIDAppUser", "1a9995ed-e3cb-490f-8684-7f24c6c59e7c")
+                .pathParams("idRole", 2)
                 .accept(JSON)
                 .when()
-                .post("/{idAppUser}/roles/{idRole}")
+                .post("/{codeUUIDAppUser}/roles/{idRole}")
                 .then()
                 .statusCode(NO_CONTENT.value());
     }
 
+    /* TODO
+    *   Ajustar Exception
+    * */
     @Test
-    public void itShouldReturnStatusHttp400WhenCallEndpointUsersRolesUsingPostMethodWithInalidPathParamsForIdAppUserOrIdRole() {
+    public void itShouldReturnStatusHttp400WhenCallEndpointUsersRolesUsingPostMethodWithInvalidPathParamsForIdAppUserOrIdRole() {
         RestAssured.given()
-                .pathParams("idAppUser", 2)
+                .pathParams("codeUUIDAppUser", "1a9995ed-e3cb-490f-8684-7f24c6c59e7c")
                 .pathParams("idRole", 12)
                 .accept(JSON)
                 .when()
-                .post("/{idAppUser}/roles/{idRole}")
+                .post("/{codeUUIDAppUser}/roles/{idRole}")
                 .then()
                 .statusCode(BAD_REQUEST.value());
     }
@@ -146,12 +149,12 @@ public class AppUserControllerIT {
                 """;
 
         RestAssured.given()
-                .pathParams("id", 1)
+                .pathParams("codeUIID", "1a9995ed-e3cb-490f-8684-7f24c6c59e7c")
                 .body(body)
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
-                .patch("/{id}")
+                .patch("/{codeUIID}")
                 .then()
                 .statusCode(OK.value());
     }
@@ -166,12 +169,12 @@ public class AppUserControllerIT {
                 """;
 
         RestAssured.given()
-                .pathParams("id", 100)
+                .pathParams("codeUIID", "1a9995ed-e3cb-490f-8684-7f24c6c59e7d")
                 .body(body)
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
-                .patch("/{id}")
+                .patch("/{codeUIID}")
                 .then()
                 .statusCode(NOT_FOUND.value());
     }
@@ -181,10 +184,10 @@ public class AppUserControllerIT {
     @Test
     public void itShouldReturnStatusHttp204WhenCallEndpointUsersUsingDeleteMethodWithValidPathParamsForID() {
         RestAssured.given()
-                .pathParams("id", 1)
+                .pathParams("codeUIID", "1a9995ed-e3cb-490f-8684-7f24c6c59e7c")
                 .accept(JSON)
                 .when()
-                .delete("/{id}")
+                .delete("/{codeUIID}")
                 .then()
                 .statusCode(NO_CONTENT.value());
     }
@@ -192,22 +195,22 @@ public class AppUserControllerIT {
     @Test
     public void itShouldReturnStatusHttp404WhenCallEndpointUsersUsingDeleteMethodWithValidPathParamsForID() {
         RestAssured.given()
-                .pathParams("id", 100)
+                .pathParams("codeUUID", "1a9995ed-e3cb-490f-8684-7f24c6c59e7d")
                 .accept(JSON)
                 .when()
-                .delete("/{id}")
+                .delete("/{codeUUID}")
                 .then()
-                .statusCode(NO_CONTENT.value());
+                .statusCode(NOT_FOUND.value());
     }
 
     @Test
     public void itShouldReturnStatusHttp204WhenCallEndpointUsersRolesUsingDeleteMethodWithValidPathParamsForIdAppUserAndIdRole() {
         RestAssured.given()
-                .pathParams("idAppUser", 1)
+                .pathParams("codeUUIDAppUser", "ab3b7982-5f0c-4935-b5bd-109f6dfaf59a")
                 .pathParams("idRole", 1)
                 .accept(JSON)
                 .when()
-                .delete("/{idAppUser}/roles/{idRole}")
+                .delete("/{codeUUIDAppUser}/roles/{idRole}")
                 .then()
                 .statusCode(NO_CONTENT.value());
     }
@@ -215,11 +218,11 @@ public class AppUserControllerIT {
     @Test
     public void itShouldReturnStatusHttp400WhenCallEndpointUsersRolesUsingDeleteMethodWithInalidPathParamsForIdAppUserOrIdRole() {
         RestAssured.given()
-                .pathParams("idAppUser", 12)
+                .pathParams("codeUUIDAppUser", "1a9995ed-e3cb-490f-8684-7f24c6c59e7d")
                 .pathParams("idRole", 1)
                 .accept(JSON)
                 .when()
-                .post("/{idAppUser}/roles/{idRole}")
+                .post("/{codeUUIDAppUser}/roles/{idRole}")
                 .then()
                 .statusCode(NOT_FOUND.value());
     }

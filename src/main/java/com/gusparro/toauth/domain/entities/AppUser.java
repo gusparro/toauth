@@ -29,7 +29,7 @@ public class AppUser implements UserDetails {
     private Long id;
 
     @Column(unique = true, nullable = false, updatable = false)
-    private String code;
+    private String codeUUID;
 
     @Column(nullable = false)
     private String fullName;
@@ -90,7 +90,7 @@ public class AppUser implements UserDetails {
 
     @PrePersist
     public void atCreated() {
-        this.code = UUID.randomUUID().toString();
+        this.codeUUID = UUID.randomUUID().toString();
     }
 
 }

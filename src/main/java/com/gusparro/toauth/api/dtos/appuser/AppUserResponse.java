@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Builder
-public record AppUserResponse(String code, String fullName, String email, String username, List<RoleResponse> roles) {
+public record AppUserResponse(String codeUUID, String fullName, String email, String username, List<RoleResponse> roles) {
     public static AppUserResponse fromAppUser(AppUser appUser) {
         return AppUserResponse.builder()
-                .code(appUser.getCode())
+                .codeUUID(appUser.getCodeUUID())
                 .fullName(appUser.getFullName())
                 .email(appUser.getEmail())
                 .username(appUser.getUsername())

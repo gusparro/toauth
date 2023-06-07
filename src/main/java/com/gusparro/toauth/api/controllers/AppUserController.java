@@ -38,14 +38,14 @@ public class AppUserController {
         return appUserService.findAll().stream().map(AppUserResponse::fromAppUser).collect(Collectors.toList());
     }
 
-    @GetMapping("/{code}")
-    public AppUserResponse getByCode(@PathVariable String code) {
-        return AppUserResponse.fromAppUser(appUserService.findByCode(code));
+    @GetMapping("/{codeUUID}")
+    public AppUserResponse getByCode(@PathVariable String codeUUID) {
+        return AppUserResponse.fromAppUser(appUserService.findByCodeUUID(codeUUID));
     }
 
-    @GetMapping("/{code}/roles")
-    public List<RoleResponse> getRolesPerAppUser(@PathVariable String code) {
-        return AppUserResponse.fromAppUser(appUserService.findByCode(code)).roles();
+    @GetMapping("/{codeUUID}/roles")
+    public List<RoleResponse> getRolesPerAppUser(@PathVariable String codeUUID) {
+        return AppUserResponse.fromAppUser(appUserService.findByCodeUUID(codeUUID)).roles();
     }
 
     /* POST METHODS */
@@ -54,24 +54,24 @@ public class AppUserController {
     public ResponseEntity<AppUserResponse> persist(@RequestBody @Valid AppUserForm appUserForm) {
         AppUser persistedAppUser = appUserService.save(appUserForm.toAppUser());
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                .path("/{id}")
-                .buildAndExpand(persistedAppUser.getId())
+                .path("/{codeUUID}")
+                .buildAndExpand(persistedAppUser.getCodeUUID())
                 .toUri();
 
         return ResponseEntity.created(uri).body(AppUserResponse.fromAppUser(persistedAppUser));
     }
 
-    @PostMapping("/{codeAppUser}/roles/{idRole}")
+    @PostMapping("/{codeUUIDAppUser}/roles/{idRole}")
     @ResponseStatus(NO_CONTENT)
-    public void addRoleToAppUser(@PathVariable String codeAppUser, @PathVariable Long idRole) {
-        appUserService.addRoleToAppUser(codeAppUser, idRole);
+    public void addRoleToAppUser(@PathVariable String codeUUIDAppUser, @PathVariable Long idRole) {
+        appUserService.addRoleToAppUser(codeUUIDAppUser, idRole);
     }
 
     /* PUT METHODS */
 
-    @PutMapping("/{code}")
-    public AppUserResponse update(@PathVariable String code, @RequestBody AppUserForm appUserForm) {
-        AppUser appUser = appUserService.findByCode(code);
+    @PutMapping("/{codeUUID}")
+    public AppUserResponse update(@PathVariable String codeUUID, @RequestBody AppUserForm appUserForm) {
+        AppUser appUser = appUserService.findByCodeUUID(codeUUID);
         BeanUtils.copyProperties(appUserForm.toAppUser(), appUser, "id");
 
         return AppUserResponse.fromAppUser(appUserService.save(appUser));
@@ -79,9 +79,9 @@ public class AppUserController {
 
     /* PATCH METHODS */
 
-    @PatchMapping("/{code}")
-    public AppUserResponse partialUpdate(@PathVariable String code, @RequestBody AppUserForm appUserForm) {
-        AppUser appUser = appUserService.findByCode(code);
+    @PatchMapping("/{codeUUID}")
+    public AppUserResponse partialUpdate(@PathVariable String codeUUID, @RequestBody AppUserForm appUserForm) {
+        AppUser appUser = appUserService.findByCodeUUID(codeUUID);
         BeanUtils.copyProperties(appUserForm.toAppUser(), appUser, getNullPropertyNames(appUserForm.toAppUser()));
 
         return AppUserResponse.fromAppUser(appUserService.save(appUser));
@@ -89,16 +89,16 @@ public class AppUserController {
 
     /* DELETE METHODS */
 
-    @DeleteMapping("/{code}")
+    @DeleteMapping("/{codeUUID}")
     @ResponseStatus(NO_CONTENT)
-    public void delete(@PathVariable String code) {
-        appUserService.deleteByCode(code);
+    public void delete(@PathVariable String codeUUID) {
+        appUserService.deleteByCodeUUID(codeUUID);
     }
 
-    @DeleteMapping("/{codeAppUser}/roles/{idRole}")
+    @DeleteMapping("/{codeUUIDAppUser}/roles/{idRole}")
     @ResponseStatus(NO_CONTENT)
-    public void removeRoleFromAppUser(@PathVariable String codeAppUser, @PathVariable Long idRole) {
-        appUserService.removeRoleFromAppUser(codeAppUser, idRole);
+    public void removeRoleFromAppUser(@PathVariable String codeUUIDAppUser, @PathVariable Long idRole) {
+        appUserService.removeRoleFromAppUser(codeUUIDAppUser, idRole);
     }
 
     /* PRIVATE METHODS */
