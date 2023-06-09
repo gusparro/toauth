@@ -9,6 +9,7 @@ import com.gusparro.toauth.domain.repositories.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +30,9 @@ public class AppUserService {
     private final RoleService roleService;
 
     private final PasswordEncoder encoder;
-
-    public List<AppUser> findAll() {
-        return appUserRepository.findAll();
+    
+    public List<AppUser> findAll(Specification<AppUser> appUserSpecification) {
+        return appUserRepository.findAll(appUserSpecification);
     }
 
     public AppUser findByCodeUUID(String codeUUID) {

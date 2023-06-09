@@ -2,9 +2,11 @@ package com.gusparro.toauth.api.controllers;
 
 import com.gusparro.toauth.api.dtos.appuser.AppUserForm;
 import com.gusparro.toauth.api.dtos.appuser.AppUserResponse;
+import com.gusparro.toauth.api.dtos.appuser.AppUserSearchFilter;
 import com.gusparro.toauth.api.dtos.role.RoleResponse;
 import com.gusparro.toauth.domain.entities.AppUser;
 import com.gusparro.toauth.domain.entities.Role;
+import com.gusparro.toauth.domain.repositories.specifications.AppUserSpecifications;
 import com.gusparro.toauth.domain.services.AppUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +36,8 @@ public class AppUserController {
     /* GET METHODS */
 
     @GetMapping
-    public List<AppUserResponse> getAll() {
-        return appUserService.findAll().stream().map(AppUserResponse::fromAppUser).collect(Collectors.toList());
+    public List<AppUserResponse> getAll(AppUserSearchFilter searchFilter) {
+        return appUserService.findAll(AppUserSpecifications.searchFilter(searchFilter)).stream().map(AppUserResponse::fromAppUser).collect(Collectors.toList());
     }
 
     @GetMapping("/{codeUUID}")
