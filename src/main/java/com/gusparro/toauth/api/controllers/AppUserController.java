@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -36,8 +39,11 @@ public class AppUserController {
     /* GET METHODS */
 
     @GetMapping
-    public List<AppUserResponse> getAll(AppUserSearchFilter searchFilter) {
-        return appUserService.findAll(AppUserSpecifications.searchFilter(searchFilter)).stream().map(AppUserResponse::fromAppUser).collect(Collectors.toList());
+    public Page<AppUserResponse> getAll(AppUserSearchFilter searchFilter, Pageable pageable) {
+        Page<AppUser> page = appUserService.findAll(AppUserSpecifications.searchFilter(searchFilter), pageable);
+        List<AppUserResponse> appUserResponses = page.getContent().stream().map(AppUserResponse::fromAppUser).toList();
+
+        return new PageImpl<>(appUserResponses, pageable, page.getTotalElements());
     }
 
     @GetMapping("/{codeUUID}")

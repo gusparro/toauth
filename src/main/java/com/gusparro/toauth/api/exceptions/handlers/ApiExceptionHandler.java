@@ -1,4 +1,4 @@
-package com.gusparro.toauth.api.exceptions.handler;
+package com.gusparro.toauth.api.exceptions.handlers;
 
 import com.gusparro.toauth.api.exceptions.InvalidField;
 import com.gusparro.toauth.api.exceptions.ProblemDetails;
@@ -23,7 +23,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -112,4 +113,5 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(exception, problemDetails, headers, status, request);
     }
+
 }
