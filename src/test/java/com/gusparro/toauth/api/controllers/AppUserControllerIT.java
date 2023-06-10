@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
+import static io.restassured.RestAssured.oauth2;
 import static io.restassured.http.ContentType.JSON;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpStatus.*;
@@ -21,6 +22,8 @@ public class AppUserControllerIT {
     @LocalServerPort
     private int port;
 
+    public final String  ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJndXNwYXJybyIsImlhdCI6MTY4NjQzODA4NCwiZXhwIjoxNjg2NTI0NDg0fQ.oZft8GWL-Ph7_6Pwx6HsCyPdlOM_CCo6AuHm-B_pDF4";
+
     @BeforeEach
     public void beforeEach() {
         flyway.migrate();
@@ -28,6 +31,7 @@ public class AppUserControllerIT {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.basePath = "/users";
         RestAssured.port = port;
+        RestAssured.authentication = oauth2(ACCESS_TOKEN);
     }
 
     /* GET METHODS */
